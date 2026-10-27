@@ -1,0 +1,22 @@
+name: Weekly recent likes playlist
+
+on:
+  schedule:
+    # Mondays at 12:00 UTC (8:00 AM New York during daylight time, 7:00 AM otherwise).
+    - cron: "0 12 * * 1"
+  workflow_dispatch: {}   # lets you run it by hand from the Actions tab
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update playlist
+        env:
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          SPOTIFY_REFRESH_TOKEN: ${{ secrets.SPOTIFY_REFRESH_TOKEN }}
+          PLAYLIST_NAME: "My 100 Latest Likes"
+        run: python3 sync_recent_likes.py
